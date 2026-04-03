@@ -36,6 +36,7 @@
       border-radius: 10px;
       margin-top: 15px;
     }
+    <div id="statusMessage" style="margin-top:10px; font-size:18px; color:green;"></div>
   </style>
 </head>
 <body>
@@ -83,7 +84,13 @@ function loadRemaining() {
 // When form submits
 document.getElementById("expenseForm").addEventListener("submit", function() {
   
-  alert("Added!");
+  const msg = document.getElementById("statusMessage");
+msg.innerText = "Added!";
+  
+  setTimeout(() => {
+    msg.innerText = "";
+}, 1500);
+  
   document.getElementById("expenseForm").reset();
 
   setTimeout(() => {
