@@ -39,7 +39,13 @@
   </style>
 </head>
 <body>
-<form action="https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec" method="POST" target="hiddenFrame">
+
+<h1 id="remaining">$0</h1>
+
+<form id="expenseForm"
+  action="https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec"
+  method="POST"
+  target="hiddenFrame">
 
   <input type="date" name="date" required>
 
@@ -57,13 +63,12 @@
   <button type="submit">Add Expense</button>
 </form>
 
-<!-- Hidden iframe prevents page redirect -->
 <iframe name="hiddenFrame" style="display:none;"></iframe>
 
 <script>
 const url = "https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec";
 
-// 🔹 Load remaining budget
+// Load remaining total
 function loadRemaining() {
   fetch(url)
     .then(res => res.json())
@@ -75,9 +80,16 @@ function loadRemaining() {
     });
 }
 
-// 🔹 Add expense
+// When form submits
+document.getElementById("expenseForm").addEventListener("submit", function() {
+  setTimeout(() => {
+    loadRemaining();
+  }, 500);
+});
 
-// Load on startup
-setInterval(loadRemaining, 2000); // auto refresh every 2 sec
+// Initial load
 loadRemaining();
 </script>
+
+</body>
+</html>
