@@ -82,11 +82,15 @@ function loadRemaining() {
 
 // When form submits
 document.getElementById("expenseForm").addEventListener("submit", function() {
+  
+  alert("Added!");
+  document.getElementById("expenseForm").reset();
+
   setTimeout(() => {
     loadRemaining();
-  }, 500);
-});
+  }, 300);
 
+});
 // Initial load
 loadRemaining();
 </script>
