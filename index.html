@@ -113,7 +113,7 @@ document.getElementById("expenseForm").addEventListener("submit", function(e) {
     setTimeout(() => { msg.innerText = ""; }, 1500);
     form.reset();
     dateInput.value = today;
-    setTimeout(() => { loadRemaining(); }, 300);
+    setTimeout(() => { loadRemaining(); }, 1500);
   })
   .catch(err => {
     console.error("POST error:", err);
