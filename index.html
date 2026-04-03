@@ -74,6 +74,11 @@
 <script>
 const url = "https://script.google.com/macros/s/AKfycbw_I869UULr94Zh9qedxLX_kJgiqMeaSYyJnIIWYq0KuaNeQlfuzKMpm5K9MWRZDUljZA/exec";
 
+  // Auto-set today's date
+const dateInput = document.querySelector('input[name="date"]');
+const today = new Date().toISOString().split('T')[0];
+dateInput.value = today;
+  
 // Load remaining total
 function loadRemaining() {
   fetch(url)
