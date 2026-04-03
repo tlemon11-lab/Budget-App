@@ -87,21 +87,29 @@ function loadRemaining() {
 }
 
 // When form submits
-document.getElementById("expenseForm").addEventListener("submit", function() {
-  
-  const msg = document.getElementById("statusMessage");
-msg.innerText = "Added!";
-  
-  setTimeout(() => {
-    msg.innerText = "";
-}, 1500);
-  
-  document.getElementById("expenseForm").reset();
+document.getElementById("expenseForm").addEventListener("submit", function(e) {
+  e.preventDefault(); // Stop the default form submit
 
-  setTimeout(() => {
-    loadRemaining();
-  }, 300);
+  const form = document.getElementById("expenseForm");
+  const formData = new FormData(form);
 
+  fetch(url, {
+    method: "POST",
+    body: formData
+  })
+  .then(() => {
+    const msg = document.getElementById("statusMessage");
+    msg.innerText = "Added!";
+    setTimeout(() => { msg.innerText = ""; }, 1500);
+
+    form.reset();
+
+    setTimeout(() => { loadRemaining(); }, 300);
+  })
+  .catch(err => {
+    console.error("POST error:", err);
+    document.getElementById("statusMessage").innerText = "Error submitting!";
+  });
 });
 // Initial load
 loadRemaining();
