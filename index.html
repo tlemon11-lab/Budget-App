@@ -81,13 +81,19 @@ dateInput.value = today;
   
 // Load remaining total
 function loadRemaining() {
-  fetch(url + "?t=" + Date.now())
+  const params = new URLSearchParams();
+  params.append("action", "getBalance");
+
+  fetch(url, {
+    method: "POST",
+    body: params
+  })
     .then(res => res.json())
     .then(data => {
       document.getElementById("remaining").innerText = "$" + data.remaining;
     })
     .catch(err => {
-      console.error("GET error:", err);
+      console.error("Balance error:", err);
     });
 }
 
