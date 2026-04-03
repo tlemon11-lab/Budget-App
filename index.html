@@ -39,23 +39,26 @@
   </style>
 </head>
 <body>
+<form action="https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec" method="POST" target="hiddenFrame">
 
-<h1 id="remaining">$0</h1>
+  <input type="date" name="date" required>
 
-<input type="date" id="date">
+  <select name="week">
+    <option value="1">Week 1</option>
+    <option value="2">Week 2</option>
+    <option value="3">Week 3</option>
+    <option value="4">Week 4</option>
+    <option value="5">Week 5</option>
+  </select>
 
-<select id="week">
-  <option value="1">Week 1</option>
-  <option value="2">Week 2</option>
-  <option value="3">Week 3</option>
-  <option value="4">Week 4</option>
-  <option value="5">Week 5</option>
-</select>
+  <input type="text" name="category" placeholder="Category" required>
+  <input type="number" name="amount" placeholder="Amount" required>
 
-<input type="text" id="category" placeholder="Category">
-<input type="number" id="amount" placeholder="Amount">
+  <button type="submit">Add Expense</button>
+</form>
 
-<button onclick="addExpense()">Add Expense</button>
+<!-- Hidden iframe prevents page redirect -->
+<iframe name="hiddenFrame" style="display:none;"></iframe>
 
 <script>
 const url = "https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec";
@@ -73,36 +76,8 @@ function loadRemaining() {
 }
 
 // 🔹 Add expense
-function addExpense() {
-  const params = new URLSearchParams();
-
-  params.append("date", document.getElementById("date").value);
-  params.append("week", document.getElementById("week").value);
-  params.append("category", document.getElementById("category").value);
-  params.append("amount", document.getElementById("amount").value);
-
-  fetch(url, {
-    method: "POST",
-    mode: "no-cors",
-    body: params.toString(), // important change
-    headers: {
-      "Constent-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(() => {
-    alert("Added!");
-
-    document.getElementById("category").value = "";
-    document.getElementById("amount").value = "";
-
-    setTimeout(loadRemaining, 500);
-  })
-  .catch(err => {
-    console.error("POST error:", err);
-    alert("Error adding expense");
-  });
-}
 
 // Load on startup
+setInterval(loadRemaining, 2000); // auto refresh every 2 sec
 loadRemaining();
 </script>
