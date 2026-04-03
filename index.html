@@ -55,15 +55,7 @@
 <button onclick="addExpense()">Add Expense</button>
 
 <script>
-const url = "https://script.google.com/macros/s/AKfycbzXHG6Yk2Pepdtvh16JdLzOUr54RP80MXuB-qeEWo4ltrc8I7jYOYgZ4UdQmyPpwg2U8g/exec";
-
-function loadRemaining() {
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("remaining").innerText = "$" + data.remaining;
-    });
-}
+const url = "https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec";
 
 function addExpense() {
   const data = {
@@ -73,18 +65,25 @@ function addExpense() {
     amount: document.getElementById("amount").value
   };
 
+  console.log("Sending:", data); // 👈 DEBUG
+
   fetch(url, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   })
   .then(res => res.json())
-  .then(() => {
-    loadRemaining();
+  .then(res => {
+    console.log("Response:", res); // 👈 DEBUG
     alert("Added!");
+  })
+  .catch(err => {
+    console.error("ERROR:", err);
+    alert("Something broke");
   });
 }
-
-loadRemaining();
 </script>
 
 </body>
