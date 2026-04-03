@@ -74,31 +74,24 @@ function loadRemaining() {
 
 // 🔹 Add expense
 function addExpense() {
-  const data = {
-    date: document.getElementById("date").value,
-    week: document.getElementById("week").value,
-    category: document.getElementById("category").value,
-    amount: document.getElementById("amount").value
-  };
+  const params = new URLSearchParams();
 
-  console.log("Sending:", data);
+  params.append("date", document.getElementById("date").value);
+  params.append("week", document.getElementById("week").value);
+  params.append("category", document.getElementById("category").value);
+  params.append("amount", document.getElementById("amount").value);
 
   fetch(url, {
     method: "POST",
-    mode: "no-cors", // 🔥 fixes CORS
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
+    mode: "no-cors",
+    body: params
   })
   .then(() => {
     alert("Added!");
 
-    // Clear inputs
     document.getElementById("category").value = "";
     document.getElementById("amount").value = "";
 
-    // Refresh total
     setTimeout(loadRemaining, 500);
   })
   .catch(err => {
@@ -110,6 +103,3 @@ function addExpense() {
 // Load on startup
 loadRemaining();
 </script>
-
-</body>
-</html>
