@@ -13,25 +13,28 @@
     }
 
     h1 {
-      font-size: 50px;
+      font-size: 60px;
       margin-bottom: 20px;
     }
 
     input, select {
       width: 90%;
-      padding: 12px;
-      margin: 8px 0;
-      font-size: 16px;
+      padding: 14px;
+      margin: 10px 0;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     button {
       width: 95%;
-      padding: 15px;
-      font-size: 18px;
+      padding: 16px;
+      font-size: 20px;
       background: black;
       color: white;
       border: none;
-      margin-top: 10px;
+      border-radius: 10px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -57,6 +60,19 @@
 <script>
 const url = "https://script.google.com/macros/s/AKfycbxPPJiFJzURsMXxVze9p2EOjTTcTZxBy1EWUmYcEWt7pw0ByB6WGyYj6EyUH2qP2vzi2g/exec";
 
+// 🔹 Load remaining budget
+function loadRemaining() {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("remaining").innerText = "$" + data.remaining;
+    })
+    .catch(err => {
+      console.error("GET error:", err);
+    });
+}
+
+// 🔹 Add expense
 function addExpense() {
   const data = {
     date: document.getElementById("date").value,
@@ -65,25 +81,34 @@ function addExpense() {
     amount: document.getElementById("amount").value
   };
 
-  console.log("Sending:", data); // 👈 DEBUG
+  console.log("Sending:", data);
 
   fetch(url, {
     method: "POST",
+    mode: "no-cors", // 🔥 fixes CORS
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   })
-  .then(res => res.json())
-  .then(res => {
-    console.log("Response:", res); // 👈 DEBUG
+  .then(() => {
     alert("Added!");
+
+    // Clear inputs
+    document.getElementById("category").value = "";
+    document.getElementById("amount").value = "";
+
+    // Refresh total
+    setTimeout(loadRemaining, 500);
   })
   .catch(err => {
-    console.error("ERROR:", err);
-    alert("Something broke");
+    console.error("POST error:", err);
+    alert("Error adding expense");
   });
 }
+
+// Load on startup
+loadRemaining();
 </script>
 
 </body>
