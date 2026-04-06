@@ -46,6 +46,15 @@ document.getElementById("expenseForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const form = document.getElementById("expenseForm");
   const formData = new FormData(form);
+
+  // Immediately show feedback and update balance optimistically
+  const msg = document.getElementById("statusMessage");
+  msg.innerText = "Adding...";
+  const enteredAmount = parseFloat(form.querySelector('input[name="amount"]').value) || 0;
+  const currentText = document.getElementById("remaining").innerText.replace("$", "");
+  const currentRemaining = parseFloat(currentText) || 0;
+  document.getElementById("remaining").innerText = "$" + (currentRemaining - enteredAmount).toFixed(2);
+
   const params = new URLSearchParams();
   for (const [key, value] of formData.entries()) {
     params.append(key, value);
@@ -55,7 +64,6 @@ document.getElementById("expenseForm").addEventListener("submit", function(e) {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        const msg = document.getElementById("statusMessage");
         msg.innerText = "Added!";
         setTimeout(() => { msg.innerText = ""; }, 1500);
         form.reset();
