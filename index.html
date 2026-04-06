@@ -3,44 +3,15 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Budget App</title>
-
   <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      padding: 20px;
-      background: #f5f5f5;
-    }
-
-    h1 {
-      font-size: 60px;
-      margin-bottom: 20px;
-    }
-
-    input, select {
-      width: 90%;
-      padding: 14px;
-      margin: 10px 0;
-      font-size: 18px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 95%;
-      padding: 16px;
-      font-size: 20px;
-      background: black;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
+    body { font-family: Arial; text-align: center; padding: 20px; background: #f5f5f5; }
+    h1 { font-size: 60px; margin-bottom: 20px; }
+    input, select { width: 90%; padding: 14px; margin: 10px 0; font-size: 18px; border-radius: 8px; border: 1px solid #ccc; }
+    button { width: 95%; padding: 16px; font-size: 20px; background: black; color: white; border: none; border-radius: 10px; margin-top: 15px; }
   </style>
 </head>
 <body>
-
-<h1 id="remaining">$0</h1>
-
+<h1 id="remaining">...</h1>
 <form id="expenseForm">
   <input type="date" name="date" required>
   <select name="week">
@@ -55,67 +26,47 @@
   <button type="submit">Add Expense</button>
   <div id="statusMessage" style="margin-top:10px;font-size:18px;color:green;font-weight:bold;"></div>
 </form>
-
-<iframe name="hiddenFrame" style="display:none;"></iframe>
-
 <script>
-const url = "https://script.google.com/macros/s/AKfycbw4rx1hJuFJdzkgE6hRggijgqCN6kt7J-x059tHJ_t0wgTtA7sojKC9R_CXyxbbUIR7/exec";
+const url = "YOUR_DEPLOYED_URL_HERE";
 
-  // Auto-set today's date
 const dateInput = document.querySelector('input[name="date"]');
 const today = new Date().toISOString().split('T')[0];
 dateInput.value = today;
-  
-// Load remaining total
-function loadRemaining() {
-  const params = new URLSearchParams();
-  params.append("action", "getBalance");
 
-  fetch(url, {
-    method: "POST",
-    body: params
-  })
+function loadRemaining() {
+  fetch(url + "?t=" + Date.now())
     .then(res => res.json())
     .then(data => {
       document.getElementById("remaining").innerText = "$" + data.remaining;
     })
-    .catch(err => {
-      console.error("Balance error:", err);
-    });
+    .catch(err => console.error("GET error:", err));
 }
 
-// When form submits
 document.getElementById("expenseForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const form = document.getElementById("expenseForm");
   const formData = new FormData(form);
-
-  // Convert to URLSearchParams — GAS handles this more reliably than FormData
   const params = new URLSearchParams();
   for (const [key, value] of formData.entries()) {
     params.append(key, value);
   }
 
-  fetch(url, {
-    method: "POST",
-    body: params
-  })
-  .then(() => {
-    const msg = document.getElementById("statusMessage");
-    msg.innerText = "Added!";
-    setTimeout(() => { msg.innerText = ""; }, 1500);
-    form.reset();
-    dateInput.value = today;
-    setTimeout(() => { loadRemaining(); }, 1500);
-  })
-  .catch(err => {
-    console.error("POST error:", err);
-    document.getElementById("statusMessage").innerText = "Error submitting!";
-  });
+  fetch(url, { method: "POST", body: params })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const msg = document.getElementById("statusMessage");
+        msg.innerText = "Added!";
+        setTimeout(() => { msg.innerText = ""; }, 1500);
+        form.reset();
+        dateInput.value = today;
+        setTimeout(() => { loadRemaining(); }, 1500);
+      }
+    })
+    .catch(err => console.error("POST error:", err));
 });
-// Initial load
+
 loadRemaining();
 </script>
-
 </body>
 </html>
